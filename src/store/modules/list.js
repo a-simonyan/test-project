@@ -1,11 +1,15 @@
 import axios from "axios";
+import _ from "lodash";
 
 const state = () => ({
 	listSuccessData: null,
+	filterData: [],
 	locationsList: null,
 	listErrorData: null,
 	listLoading: false,
-  filterData: [],
+	currentPage: 1,
+	perPage: 15,
+	paginateData: [],
 });
 
 const getters = {
@@ -14,6 +18,7 @@ const getters = {
 	listLoading: (state) => state.listLoading,
 	locationsList: (state) => state.locationsList,
 	filterData: (state) => state.filterData,
+	paginateData: (state) => state.paginateData,
 };
 
 const mutations = {
@@ -22,7 +27,11 @@ const mutations = {
 	},
 	GET_LIST_SUCCESS: (state, response) => {
 		state.listSuccessData = response;
-		state.filterData = response;
+		state.listSuccessData = _.orderBy(state.listSuccessData, [
+			"Last name",
+			"First name",
+		], 'asc');
+		state.filterData = state.listSuccessData;
 	},
 	GET_LOCATIONS: (state, response) => {
 		if (!response) return;
@@ -31,6 +40,22 @@ const mutations = {
 	GET_LIST_FAILURE: (state, response) => {
 		state.listErrorData = null;
 		state.listErrorData = response;
+	},
+	GET_PAGINATE_DATA: (state, payload) => {
+		if (payload) {
+			state.currentPage++;
+		} else {
+			state.currentPage = 1;
+		}
+		const pageData = state.filterData.slice(
+			(state.currentPage - 1) * state.perPage,
+			state.currentPage * state.perPage
+		);
+		if (payload) {
+			state.paginateData = [...state.paginateData, ...pageData];
+		} else {
+			state.paginateData = pageData;
+		}
 	},
 	FILTER_LIST: (state, payload) => {
 		state.filterData = state.listSuccessData;
@@ -68,6 +93,7 @@ const actions = {
 			.then((response) => {
 				commit("GET_LIST_SUCCESS", response.data);
 				commit("GET_LOCATIONS", response.data);
+				commit("GET_PAGINATE_DATA", false);
 			})
 			.catch((e) => {
 				commit("GET_LIST_FAILURE", e);
@@ -78,6 +104,10 @@ const actions = {
 	},
 	filterListData({ commit }, payload) {
 		commit("FILTER_LIST", payload);
+		commit("GET_PAGINATE_DATA", false);
+	},
+	changePage({ commit }) {
+		commit("GET_PAGINATE_DATA", true);
 	},
 };
 export default {
