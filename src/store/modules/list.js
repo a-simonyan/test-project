@@ -27,10 +27,11 @@ const mutations = {
 	},
 	GET_LIST_SUCCESS: (state, response) => {
 		state.listSuccessData = response;
-		state.listSuccessData = _.orderBy(state.listSuccessData, [
-			"Last name",
-			"First name",
-		], 'asc');
+		state.listSuccessData = _.orderBy(
+			state.listSuccessData,
+			["Last name", "First name"],
+			"asc"
+		);
 		state.filterData = state.listSuccessData;
 	},
 	GET_LOCATIONS: (state, response) => {
@@ -82,6 +83,13 @@ const mutations = {
 				payload.locations.includes(item["Location"])
 			);
 		}
+    const fromDate = payload.date.from ? payload.date.from : new Date('1800-01-01');
+    const toDate = payload.date.to ? payload.date.to : new Date();
+		state.filterData = state.filterData.filter(
+			(item) =>
+				Number(new Date(item["Date of birth"])) >= Number(new Date(fromDate)) &&
+				Number(new Date(item["Date of birth"])) <= Number(new Date(toDate))
+		);
 	},
 };
 

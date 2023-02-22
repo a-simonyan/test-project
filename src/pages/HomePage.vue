@@ -15,7 +15,8 @@
 				:locations="locationsList"
 				@update:selectedLocations="updateSelectedLocations"
 			/>
-			<div class="home__cards-list mt-4">
+			<dateFilter @update:date-value="changeDate" />
+			<div class="home__cards-list mt-5">
 				<div v-if="dataList.length">
 					<compact-card
 						v-for="(item, i) in dataList"
@@ -36,6 +37,7 @@
 import searchFilter from "@/components/searchFilter.vue";
 import locationFilter from "@/components/locationFilter.vue";
 import compactCard from "@/components/compactCard.vue";
+import dateFilter from "@/components/dateFilter.vue";
 import { ref, computed, onMounted, onUnmounted } from "vue";
 import { useStore } from "vuex";
 
@@ -43,11 +45,16 @@ const store = useStore();
 
 const search = ref("");
 const selectedlocations = ref([]);
+const dates = ref({
+	from: "",
+	to: "",
+});
 
 const searchResult = () => {
 	store.dispatch("filterListData", {
 		search: search.value,
 		locations: selectedlocations.value,
+		date: dates.value,
 	});
 };
 
@@ -62,6 +69,16 @@ const updateSelectedLocations = (location) => {
 	store.dispatch("filterListData", {
 		search: search.value,
 		locations: selectedlocations.value,
+		date: dates.value,
+	});
+};
+
+const changeDate = (val) => {
+	dates.value = val;
+	store.dispatch("filterListData", {
+		search: search.value,
+		locations: selectedlocations.value,
+		date: dates.value,
 	});
 };
 
