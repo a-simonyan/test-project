@@ -1,6 +1,6 @@
 <template>
 	<div class="date-filter-box mt-5">
-		<h5>Filter by Location</h5>
+		<h5>Filter by Birthday</h5>
 		<div
 			class="date-filter-box__input-container d-flex justify-content-between align-items-center"
 		>

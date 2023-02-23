@@ -25,7 +25,7 @@
 						:key="`${i}`"
 					/>
 				</div>
-				<div v-else class="home__empty-box py-5">
+				<div v-else class="home__empty-box w-100 py-5">
 					<i>No data to display</i>
 				</div>
 			</div>
@@ -123,7 +123,6 @@ onUnmounted(() => {
 		border-radius: 8px;
 	}
 	&__empty-box {
-		width: 100%;
 		text-align: center;
 	}
 }
